@@ -17,7 +17,8 @@ WiFiClient client;
 
 
 Adafruit_MQTT_Client mqtt(&client, AIO_SERVER, AIO_SERVERPORT, IO_USERNAME, IO_KEY);
-Adafruit_MQTT_Publish Tinker = Adafruit_MQTT_Publish(&mqtt, IO_USERNAME "/feeds/Tinker");
+Adafruit_MQTT_Publish Tinker1 = Adafruit_MQTT_Publish(&mqtt, IO_USERNAME "/feeds/Tinker");
+Adafruit_MQTT_Publish Tinker2 = Adafruit_MQTT_Publish(&mqtt, IO_USERNAME "/feeds/TinkerLine");
 AdafruitIO_Feed *digital = io.feed("Tinker"); 
 
 #define LED_PIN 12
@@ -98,7 +99,7 @@ void loop() {
   io.run(); 
   
   int ra1=analogRead(Sensor_Pin);
-  Serial.println(ra1);
+  //Serial.println(ra1);
 
  if(! mqtt.ping(3)) {
     // reconnect to adafruit io
@@ -108,17 +109,23 @@ void loop() {
   int k;
   temp++;
   
-  if(temp==20)
+  if(temp==40)
   {
     if(ra1>minimum_value)
       k=1;
     else
         k=0;
 
-    //Serial.print("Value of ra1 =");
-   // Serial.println(ra1);
+    Serial.print("Value of ra1 =");
+    Serial.println(ra1);
     
-    if (! Tinker.publish(k)) {                     //Publish to Adafruit
+    if (! Tinker1.publish(k)) {                     //Publish to Adafruit
+      Serial.println(F("Failed"));
+    } else {
+      Serial.println(F("Sent!"));
+    }
+
+     if (! Tinker2.publish(ra1)) {                     //Publish to Adafruit
       Serial.println(F("Failed"));
     } else {
       Serial.println(F("Sent!"));
